@@ -8,6 +8,22 @@ public class GameManager : MonoBehaviour
 
     private GameState _current;
 
+    private void Start ()
+    {
+        PlayerHealth.Instance.OnDestroyed += Instance_OnDestroyed;
+        PlayerHealth.Instance.OnReachedGoal += Instance_OnReachedGoal; ;
+    }
+
+    private void Instance_OnReachedGoal ()
+    {
+        SetState(GameState.Win);
+    }
+
+    private void Instance_OnDestroyed ()
+    {
+        SetState(GameState.Lose);
+    }
+
     private void SetState (GameState gameState)
     {
         if (_current == gameState) return;
@@ -16,24 +32,34 @@ public class GameManager : MonoBehaviour
 
         _current = gameState;
         OnGameStateChanged?.Invoke(gameState);
-    }
 
-    private void Update ()
-    {
-        if (Input.GetKeyUp(KeyCode.L)) SetState(GameState.Lose);
-        if (Input.GetKeyUp(KeyCode.I)) SetState(GameState.Win);
+        //if (gameState != GameState.Normal) Time.timeScale = 0;
+        //else Time.timeScale = 1;
     }
 
     public void TogglePause (InputAction.CallbackContext c)
     {
         if (!c.performed) return;
 
+        TogglePauseBase();
+    }
+
+    public void TogglePause () => TogglePauseBase();
+
+    private void TogglePauseBase ()
+    {
         SetState(_current switch
         {
             GameState.Paused => GameState.Normal,
             GameState.Normal => GameState.Paused,
             _ => _current
         });
+    }
+
+    private void OnDestroy ()
+    {
+        PlayerHealth.Instance.OnDestroyed -= Instance_OnDestroyed;
+        PlayerHealth.Instance.OnReachedGoal -= Instance_OnReachedGoal;
     }
 }
 

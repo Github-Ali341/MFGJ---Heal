@@ -32,7 +32,12 @@ namespace MFGJ.Controllers
             float direction = c.ReadValue<float>();
             rb.velocity = new Vector2(direction * moveSpeed, rb.velocity.y);
         }
-
+        
+        public void MoveJoystick (Vector2 direction)
+        {
+            rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
+        }
+        
         private bool IsTouching(Vector2 direction)
         {
             RaycastHit2D hitInfo = Physics2D.BoxCast(

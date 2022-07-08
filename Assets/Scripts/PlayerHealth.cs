@@ -5,6 +5,7 @@ using System;
 public class PlayerHealth : Singleton<PlayerHealth>
 {
     public event Action OnDestroyed;
+    public event Action OnReachedGoal;
 
     [SerializeField] private float damagePerFrame;
 
@@ -20,7 +21,6 @@ public class PlayerHealth : Singleton<PlayerHealth>
     private void Start ()
     {
         _healthSystem = _iGetHealthSystem.GetHealthSystem();
-
         _healthSystem.OnDead += (object o, EventArgs e) =>
         {
             OnDestroyed?.Invoke();
@@ -35,9 +35,22 @@ public class PlayerHealth : Singleton<PlayerHealth>
 
     private void OnTriggerEnter2D (Collider2D collision)
     {
+        CheckForHealers(collision);
+        CheckForFinishZone(collision);
+    }
+
+    private void CheckForHealers (Collider2D collision)
+    {
         if (!collision.TryGetComponent(out Healer healer)) return;
 
         _healthSystem.Heal(healer.GetHealAmount());
         healer.OnHealerUsed();
+    }
+
+    private void CheckForFinishZone (Collider2D collision)
+    {
+        if (!collision.CompareTag("Finish")) return;
+
+        OnReachedGoal?.Invoke();
     }
 }

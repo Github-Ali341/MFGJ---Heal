@@ -104,17 +104,6 @@
                 },
                 {
                     "name": "",
-                    "id": "52578ad0-6337-4a55-aa3a-8cd553bb6e77",
-                    "path": "<Touchscreen>/delta/x",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Touch",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "6d31a5b1-e532-4f82-936d-3b6cacdf1ca5",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -142,17 +131,6 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "be002d18-532d-4170-aee6-9d4304c9d8f9",
-                    "path": "<Touchscreen>/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Touch",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -199,10 +177,10 @@
                 {
                     "name": "",
                     "id": "9f8469a2-4dbd-4c47-8980-a71233696682",
-                    "path": "<Touchscreen>/touch*/Press",
-                    "interactions": "MultiTap",
+                    "path": "<Touchscreen>/touch1/tap",
+                    "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Touch",
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
