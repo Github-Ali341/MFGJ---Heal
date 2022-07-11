@@ -6,6 +6,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject winUI; 
     [SerializeField] private GameObject pauseUI; 
     [SerializeField] private GameObject loseUI; 
+    [SerializeField] private GameObject gameUI; 
 
     private void Start ()
     {
@@ -14,32 +15,29 @@ public class MenuManager : MonoBehaviour
 
     private void GameManager_OnGameStateChanged (GameState obj)
     {
-        switch (obj)
+        winUI.SetActive(obj switch
         {
-            case GameState.Normal:
-            winUI.SetActive(false);
-            pauseUI.SetActive(false);
-            loseUI.SetActive(false);
-            break;
+            GameState.Win => true,
+            _ => false,
+        });
 
-            case GameState.Paused:
-            winUI.SetActive(false);
-            pauseUI.SetActive(true);
-            loseUI.SetActive(false);
-            break;
+        pauseUI.SetActive(obj switch
+        {
+            GameState.Paused => true,
+            _ => false,
+        });
 
-            case GameState.Lose:
-            winUI.SetActive(false);
-            pauseUI.SetActive(false);
-            loseUI.SetActive(true);
-            break;
+        loseUI.SetActive(obj switch
+        {
+            GameState.Lose => true,
+            _ => false,
+        });
 
-            case GameState.Win:
-            winUI.SetActive(true);
-            pauseUI.SetActive(false);
-            loseUI.SetActive(false);
-            break;
-        }
+        gameUI.SetActive(obj switch
+        {
+            GameState.Normal => true,
+            _ => false,
+        });
     }
 
     private void OnDestroy ()

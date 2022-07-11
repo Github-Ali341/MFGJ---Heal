@@ -11,6 +11,7 @@ namespace MFGJ.Controllers
 
         private Rigidbody2D rb;
         private BoxCollider2D boxCollider;
+        private float _direction;
         private const float GROUND_DISTANCE = 0.03f;
 
         private void Awake()
@@ -23,21 +24,21 @@ namespace MFGJ.Controllers
         {
             if (IsTouching(Vector2.down))
             {
-                rb.velocity = Vector2.up * jumpForce;
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             }
         }
 
         public void Move(InputAction.CallbackContext c)
         {
             float direction = c.ReadValue<float>();
-            rb.velocity = new Vector2(direction * moveSpeed, rb.velocity.y);
+            _direction = direction;
         }
-        
-        public void MoveJoystick (Vector2 direction)
+
+        private void FixedUpdate ()
         {
-            rb.velocity = new Vector2(direction.x * moveSpeed, rb.velocity.y);
+            rb.velocity = new Vector2(_direction * moveSpeed, rb.velocity.y);
         }
-        
+
         private bool IsTouching(Vector2 direction)
         {
             RaycastHit2D hitInfo = Physics2D.BoxCast(

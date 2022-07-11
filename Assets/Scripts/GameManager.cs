@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using System;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
     public event Action<GameState> OnGameStateChanged;
 
@@ -10,31 +11,33 @@ public class GameManager : MonoBehaviour
 
     private void Start ()
     {
-        PlayerHealth.Instance.OnDestroyed += Instance_OnDestroyed;
-        PlayerHealth.Instance.OnReachedGoal += Instance_OnReachedGoal; ;
+        SetState(GameState.Normal);
+
+        Player.Instance.OnDestroyed += Instance_OnDestroyed;
+        Player.Instance.OnReachedGoal += Instance_OnReachedGoal;
     }
 
-    private void Instance_OnReachedGoal ()
+    public void LoadCurrent ()
     {
-        SetState(GameState.Win);
+        SetState(GameState.Normal);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    private void Instance_OnDestroyed ()
-    {
-        SetState(GameState.Lose);
-    }
+    private void Instance_OnReachedGoal () => SetState(GameState.Win);
+    private void Instance_OnDestroyed () => SetState(GameState.Lose);
 
     private void SetState (GameState gameState)
     {
-        if (_current == gameState) return;
+        //if (_current == gameState) return;
         if (_current == GameState.Paused && gameState != GameState.Normal) return;
+        // Prevents pausing while endgame.
         if ((_current == GameState.Win || _current == GameState.Lose) && gameState != GameState.Normal) return;
+
+        if (gameState != GameState.Normal) Time.timeScale = 0;
+        else Time.timeScale = 1;
 
         _current = gameState;
         OnGameStateChanged?.Invoke(gameState);
-
-        //if (gameState != GameState.Normal) Time.timeScale = 0;
-        //else Time.timeScale = 1;
     }
 
     public void TogglePause (InputAction.CallbackContext c)
@@ -43,9 +46,7 @@ public class GameManager : MonoBehaviour
 
         TogglePauseBase();
     }
-
     public void TogglePause () => TogglePauseBase();
-
     private void TogglePauseBase ()
     {
         SetState(_current switch
@@ -58,15 +59,12 @@ public class GameManager : MonoBehaviour
 
     private void OnDestroy ()
     {
-        PlayerHealth.Instance.OnDestroyed -= Instance_OnDestroyed;
-        PlayerHealth.Instance.OnReachedGoal -= Instance_OnReachedGoal;
+        Player.Instance.OnDestroyed -= Instance_OnDestroyed;
+        Player.Instance.OnReachedGoal -= Instance_OnReachedGoal;
     }
 }
 
-public enum GameState
+static class EXT
 {
-    Normal,
-    Paused,
-    Lose,
-    Win
+
 }

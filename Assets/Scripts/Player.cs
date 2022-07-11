@@ -2,12 +2,12 @@ using UnityEngine;
 using CodeMonkey.HealthSystemCM;
 using System;
 
-public class PlayerHealth : Singleton<PlayerHealth>
+public class Player : Singleton<Player>
 {
     public event Action OnDestroyed;
     public event Action OnReachedGoal;
 
-    [SerializeField] private float damagePerFrame;
+    [SerializeField] private float damage;
 
     private IGetHealthSystem _iGetHealthSystem;
     private HealthSystem _healthSystem;
@@ -30,7 +30,14 @@ public class PlayerHealth : Singleton<PlayerHealth>
 
     private void Update ()
     {
-        _healthSystem.Damage(damagePerFrame * Time.deltaTime);
+        _healthSystem.Damage(damage * Time.deltaTime);
+
+        const float threshold = -20f;
+        if (transform.position.y < threshold)
+        {
+            OnDestroyed?.Invoke();
+            Destroy(gameObject);
+        }
     }
 
     private void OnTriggerEnter2D (Collider2D collision)
