@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace MFGJ.Controllers
+namespace Heal.Controllers
 {
     public class CharacterController2D : MonoBehaviour
     {
         [SerializeField] private LayerMask jumpMask;
         [SerializeField] private float moveSpeed;
         [SerializeField] private float jumpForce;
+        [SerializeField] private AudioSource jumpSource;
 
         private Rigidbody2D rb;
         private BoxCollider2D boxCollider;
@@ -25,6 +26,7 @@ namespace MFGJ.Controllers
             if (IsTouching(Vector2.down))
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                jumpSource.Play();
             }
         }
 
@@ -32,6 +34,11 @@ namespace MFGJ.Controllers
         {
             float direction = c.ReadValue<float>();
             _direction = direction;
+        }
+
+        public void Move (float c)
+        {
+            _direction = c;
         }
 
         private void FixedUpdate ()

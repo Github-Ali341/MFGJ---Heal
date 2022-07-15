@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {
+    [SerializeField] private Transform levelPart_Parent;
     [SerializeField] private Transform levelPart_Start;
     [SerializeField] private List<Transform> levelParts;
     [SerializeField] private Transform player;
@@ -33,6 +34,7 @@ public class LevelGenerator : MonoBehaviour
     private void SpawnLevelPart ()
     {
         Transform lastLevelPartTransform = SpawnLevelPart(levelParts[Random.Range(0, levelParts.Count)], _lastEndPosition);
+        lastLevelPartTransform.parent = levelPart_Parent;
         _lastEndPosition = lastLevelPartTransform.Find("EndPosition").position;
     }
 

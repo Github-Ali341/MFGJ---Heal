@@ -8,6 +8,7 @@ public class Player : Singleton<Player>
     public event Action OnReachedGoal;
 
     [SerializeField] private float damage;
+    [SerializeField] private AudioSource healSoundSource;
 
     private IGetHealthSystem _iGetHealthSystem;
     private HealthSystem _healthSystem;
@@ -44,6 +45,7 @@ public class Player : Singleton<Player>
     {
         CheckForHealers(collision);
         CheckForFinishZone(collision);
+        CheckForSpike(collision);
     }
 
     private void CheckForHealers (Collider2D collision)
@@ -52,6 +54,8 @@ public class Player : Singleton<Player>
 
         _healthSystem.Heal(healer.GetHealAmount());
         healer.OnHealerUsed();
+
+        healSoundSource.Play();
     }
 
     private void CheckForFinishZone (Collider2D collision)
@@ -59,5 +63,12 @@ public class Player : Singleton<Player>
         if (!collision.CompareTag("Finish")) return;
 
         OnReachedGoal?.Invoke();
+    }
+
+    private void CheckForSpike (Collider2D collision)
+    {
+        if (!collision.CompareTag("Spike")) return;
+
+        _healthSystem.Die();
     }
 }

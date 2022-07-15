@@ -28,7 +28,7 @@ public class GameManager : Singleton<GameManager>
 
     private void SetState (GameState gameState)
     {
-        //if (_current == gameState) return;
+        //if (_current == gameState) return; causes bugs.
         if (_current == GameState.Paused && gameState != GameState.Normal) return;
         // Prevents pausing while endgame.
         if ((_current == GameState.Win || _current == GameState.Lose) && gameState != GameState.Normal) return;
