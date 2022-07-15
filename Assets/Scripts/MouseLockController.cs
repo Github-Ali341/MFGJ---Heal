@@ -5,6 +5,8 @@ public class MouseLockController : MonoBehaviour
     private void Start ()
     {
         GameManager.Instance.OnGameStateChanged += Instance_OnGameStateChanged;
+        
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Instance_OnGameStateChanged (GameState obj)

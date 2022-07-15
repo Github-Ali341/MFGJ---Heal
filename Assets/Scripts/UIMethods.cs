@@ -3,6 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class UIMethods : MonoBehaviour
 {
+    public void ResetHighScore ()
+    {
+        ScoreManager.ResetHighScore();
+    }
+
     public void LoadScene (int index)
     {
         SceneManager.LoadScene(index);
