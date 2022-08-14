@@ -127,10 +127,21 @@
                 {
                     "name": "",
                     "id": "841efc81-3ec6-4a50-9f58-043fb4b768e7",
-                    "path": "<Gamepad>/buttonEast",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "67d06b84-e70c-49ca-935d-5046234572d2",
+                    "path": "<DualShockGamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -166,7 +177,7 @@
                 {
                     "name": "",
                     "id": "8ae0cd64-82a7-46f8-89ce-1aa0734bc3be",
-                    "path": "<Gamepad>/buttonWest",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",

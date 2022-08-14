@@ -15,11 +15,18 @@ public class GameManager : Singleton<GameManager>
 
         Player.Instance.OnDestroyed += Instance_OnDestroyed;
         Player.Instance.OnReachedGoal += Instance_OnReachedGoal;
+        Controls.InputActions.Game.Pause.performed += TogglePauseInputSystem;
+    }
+
+    private void OnDestroy ()
+    {
+        Player.Instance.OnDestroyed -= Instance_OnDestroyed;
+        Player.Instance.OnReachedGoal -= Instance_OnReachedGoal;
+        Controls.InputActions.Game.Pause.performed -= TogglePauseInputSystem;
     }
 
     public void LoadCurrent ()
     {
-        SetState(GameState.Normal);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -28,7 +35,6 @@ public class GameManager : Singleton<GameManager>
 
     private void SetState (GameState gameState)
     {
-        //if (_current == gameState) return; causes bugs.
         if (_current == GameState.Paused && gameState != GameState.Normal) return;
         // Prevents pausing while endgame.
         if ((_current == GameState.Win || _current == GameState.Lose) && gameState != GameState.Normal) return;
@@ -40,14 +46,19 @@ public class GameManager : Singleton<GameManager>
         OnGameStateChanged?.Invoke(gameState);
     }
 
-    public void TogglePause (InputAction.CallbackContext c)
+    public void TogglePauseInputSystem (InputAction.CallbackContext c)
     {
         if (!c.performed) return;
 
-        TogglePauseBase();
+        TogglePause();
     }
-    public void TogglePause () => TogglePauseBase();
-    private void TogglePauseBase ()
+
+    public void TogglePauseNoParameters ()
+    {
+        TogglePause();
+    }
+
+    private void TogglePause ()
     {
         SetState(_current switch
         {
@@ -56,15 +67,4 @@ public class GameManager : Singleton<GameManager>
             _ => _current
         });
     }
-
-    private void OnDestroy ()
-    {
-        Player.Instance.OnDestroyed -= Instance_OnDestroyed;
-        Player.Instance.OnReachedGoal -= Instance_OnReachedGoal;
-    }
-}
-
-static class EXT
-{
-
 }

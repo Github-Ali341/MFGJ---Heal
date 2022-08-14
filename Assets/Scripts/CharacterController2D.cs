@@ -14,6 +14,8 @@ namespace Heal.Controllers
         private BoxCollider2D boxCollider;
         private float _direction;
         private const float GROUND_DISTANCE = 0.03f;
+        
+        private bool _disable;
 
         private void Awake()
         {
@@ -21,30 +23,47 @@ namespace Heal.Controllers
             boxCollider = GetComponent<BoxCollider2D>();
         }
 
-        public void Jump()
+        private void Start ()
         {
-            if (IsTouching(Vector2.down))
+            Controls.InputActions.Player.Jump.performed += Jump;
+            Controls.InputActions.Player.Move.performed += Move;
+            Controls.InputActions.Player.Move.canceled += Stop;
+            GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+        }
+
+        private void FixedUpdate ()
+        {
+            if (!_disable)
+                rb.velocity = new Vector2(_direction * moveSpeed, rb.velocity.y);
+        }
+
+        private void OnDestroy ()
+        {
+            Controls.InputActions.Player.Jump.performed -= Jump;
+            Controls.InputActions.Player.Move.performed -= Move;
+            Controls.InputActions.Player.Move.canceled -= Stop;
+            GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+        }
+
+        private void OnGameStateChanged (GameState obj)
+        {
+            _disable = obj switch
+            {
+                GameState.Normal => false,
+                _ => true
+            };
+        }
+
+        private void Jump (InputAction.CallbackContext c)
+        {
+            if (IsTouching(Vector2.down) && !_disable)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
                 jumpSource.Play();
             }
         }
-
-        public void Move(InputAction.CallbackContext c)
-        {
-            float direction = c.ReadValue<float>();
-            _direction = direction;
-        }
-
-        public void Move (float c)
-        {
-            _direction = c;
-        }
-
-        private void FixedUpdate ()
-        {
-            rb.velocity = new Vector2(_direction * moveSpeed, rb.velocity.y);
-        }
+        private void Move (InputAction.CallbackContext c) => _direction = c.ReadValue<float>();
+        private void Stop (InputAction.CallbackContext c) => _direction = 0;
 
         private bool IsTouching(Vector2 direction)
         {

@@ -2,24 +2,16 @@ using UnityEngine;
 
 public class MouseLockController : MonoBehaviour
 {
-    private void Start ()
+    private void Update ()
     {
-        GameManager.Instance.OnGameStateChanged += Instance_OnGameStateChanged;
-        
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    private void Instance_OnGameStateChanged (GameState obj)
-    {
-        Cursor.lockState = obj switch
+        if (Input.GetMouseButtonDown(2))
         {
-            GameState.Normal => CursorLockMode.Locked,
-            _ => CursorLockMode.None,
-        };
-    }
-
-    private void OnDestroy () 
-    {
-        GameManager.Instance.OnGameStateChanged -= Instance_OnGameStateChanged;
+            Cursor.lockState = Cursor.lockState switch
+            {
+                CursorLockMode.Locked => CursorLockMode.None,
+                CursorLockMode.None => CursorLockMode.Locked,
+                _ => Cursor.lockState
+            };
+        }
     }
 }
