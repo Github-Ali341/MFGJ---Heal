@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Heal.Controllers
+namespace Heal.Components
 {
     public class CharacterController2D : MonoBehaviour
     {
@@ -10,25 +10,17 @@ namespace Heal.Controllers
         [SerializeField] private float jumpForce;
         [SerializeField] private AudioSource jumpSource;
 
+        private bool _disable;
         private Rigidbody2D rb;
         private BoxCollider2D boxCollider;
         private float _direction;
-        private const float GROUND_DISTANCE = 0.03f;
         
-        private bool _disable;
+        private const float GROUND_DISTANCE = 0.03f;
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
             boxCollider = GetComponent<BoxCollider2D>();
-        }
-
-        private void Start ()
-        {
-            Controls.InputActions.Player.Jump.performed += Jump;
-            Controls.InputActions.Player.Move.performed += Move;
-            Controls.InputActions.Player.Move.canceled += Stop;
-            GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
         }
 
         private void FixedUpdate ()
@@ -37,24 +29,11 @@ namespace Heal.Controllers
                 rb.velocity = new Vector2(_direction * moveSpeed, rb.velocity.y);
         }
 
-        private void OnDestroy ()
+        public void SetActive (bool active)
         {
-            Controls.InputActions.Player.Jump.performed -= Jump;
-            Controls.InputActions.Player.Move.performed -= Move;
-            Controls.InputActions.Player.Move.canceled -= Stop;
-            GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+            _disable = !active;
         }
-
-        private void OnGameStateChanged (GameState obj)
-        {
-            _disable = obj switch
-            {
-                GameState.Normal => false,
-                _ => true
-            };
-        }
-
-        private void Jump (InputAction.CallbackContext c)
+        public void Jump (InputAction.CallbackContext c)
         {
             if (IsTouching(Vector2.down) && !_disable)
             {
@@ -62,10 +41,9 @@ namespace Heal.Controllers
                 jumpSource.Play();
             }
         }
-        private void Move (InputAction.CallbackContext c) => _direction = c.ReadValue<float>();
-        private void Stop (InputAction.CallbackContext c) => _direction = 0;
-
-        private bool IsTouching(Vector2 direction)
+        public void Move (InputAction.CallbackContext c) => _direction = c.ReadValue<float>();
+        public void Stop (InputAction.CallbackContext c) => _direction = 0;
+        public bool IsTouching(Vector2 direction)
         {
             RaycastHit2D hitInfo = Physics2D.BoxCast(
                 boxCollider.bounds.center, 

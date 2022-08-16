@@ -1,11 +1,14 @@
 using UnityEngine;
 
-public class FollowTarget : MonoBehaviour
+namespace Heal.Components
 {
-    [SerializeField] private Transform target;
-
-    private void Update ()
+    public class FollowTarget : MonoBehaviour
     {
-        if (target != null) transform.position = target.position;
+        [SerializeField] private Transform target;
+
+        private void Update ()
+        {
+            if (target != null) transform.position = target.position;
+        }
     }
 }

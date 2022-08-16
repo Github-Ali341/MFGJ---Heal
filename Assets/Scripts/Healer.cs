@@ -1,13 +1,16 @@
 using UnityEngine;
 
-public class Healer : MonoBehaviour
+namespace Heal.Components
 {
-    [SerializeField] private float healAmount;
-
-    public float GetHealAmount() => healAmount;
-
-    public void OnHealerUsed ()
+    public class Healer : MonoBehaviour
     {
-        Destroy(gameObject);
-    }
+        [SerializeField] private float healAmount;
+
+        public float GetHealAmount () => healAmount;
+
+        public void OnHealerUsed ()
+        {
+            Destroy(gameObject);
+        }
+    } 
 }

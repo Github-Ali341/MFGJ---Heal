@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 using System;
+using Heal.Components;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -14,23 +14,15 @@ public class GameManager : Singleton<GameManager>
         SetState(GameState.Normal);
 
         Player.Instance.OnDestroyed += Instance_OnDestroyed;
-        Player.Instance.OnReachedGoal += Instance_OnReachedGoal;
         Controls.InputActions.Game.Pause.performed += TogglePauseInputSystem;
     }
 
     private void OnDestroy ()
     {
         Player.Instance.OnDestroyed -= Instance_OnDestroyed;
-        Player.Instance.OnReachedGoal -= Instance_OnReachedGoal;
         Controls.InputActions.Game.Pause.performed -= TogglePauseInputSystem;
     }
 
-    public void LoadCurrent ()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    private void Instance_OnReachedGoal () => SetState(GameState.Win);
     private void Instance_OnDestroyed () => SetState(GameState.Lose);
 
     private void SetState (GameState gameState)

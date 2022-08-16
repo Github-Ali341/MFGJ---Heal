@@ -7,6 +7,7 @@ public class ScoreManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI[] _scoreTexts;
     [SerializeField] private TextMeshProUGUI _highScoreText;
+    [SerializeField] private Transform scorersTransform;
 
     private float _score;
     private static float _highestScore;
@@ -21,17 +22,15 @@ public class ScoreManager : MonoBehaviour
     private void Start ()
     {
         LoadScoreFromPlayerPrefs();
-        UpdateScore();
 
-        if (Player.Instance != null)
-        {
-            _startingPosition = Player.Instance.transform.position;
-        }
+        if (scorersTransform != null) _startingPosition = scorersTransform.position;
 
         for (int i = 0; i < _scoreTexts.Length; i++)
         {
             _scoreTexts[i].SetText("0"); 
         }
+
+        UpdateScore();
     }
 
     private void Update ()
@@ -41,10 +40,7 @@ public class ScoreManager : MonoBehaviour
 
     private void UpdateScore ()
     {
-        if (Player.Instance != null)
-        {
-            _position = Player.Instance.transform.position;
-        }
+        if (scorersTransform != null) _position = scorersTransform.position;
 
         // To prevent getting score for going backwards.
         Vector3 direction = (_position - _startingPosition).normalized;

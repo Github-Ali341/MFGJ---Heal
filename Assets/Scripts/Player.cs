@@ -2,73 +2,76 @@ using UnityEngine;
 using CodeMonkey.HealthSystemCM;
 using System;
 
-public class Player : Singleton<Player>
+namespace Heal.Components
 {
-    public event Action OnDestroyed;
-    public event Action OnReachedGoal;
-
-    [SerializeField] private float damage;
-    [SerializeField] private AudioSource healSoundSource;
-
-    private IGetHealthSystem _iGetHealthSystem;
-    private HealthSystem _healthSystem;
-
-    protected override void Awake ()
+    public class Player : Singleton<Player>
     {
-        base.Awake();
-        _iGetHealthSystem = GetComponent<IGetHealthSystem>();
-    }
+        public event Action OnDestroyed;
+        public event Action OnReachedGoal;
 
-    private void Start ()
-    {
-        _healthSystem = _iGetHealthSystem.GetHealthSystem();
-        _healthSystem.OnDead += (object o, EventArgs e) =>
+        [SerializeField] private float damage;
+        [SerializeField] private AudioSource healSoundSource;
+
+        private IGetHealthSystem _iGetHealthSystem;
+        private HealthSystem _healthSystem;
+
+        protected override void Awake ()
         {
-            OnDestroyed?.Invoke();
-            Destroy(gameObject);
-        };
-    }
-
-    private void Update ()
-    {
-        _healthSystem.Damage(damage * Time.deltaTime);
-
-        const float threshold = -20f;
-        if (transform.position.y < threshold)
-        {
-            OnDestroyed?.Invoke();
-            Destroy(gameObject);
+            base.Awake();
+            _iGetHealthSystem = GetComponent<IGetHealthSystem>();
         }
-    }
 
-    private void OnTriggerEnter2D (Collider2D collision)
-    {
-        CheckForHealers(collision);
-        CheckForFinishZone(collision);
-        CheckForSpike(collision);
-    }
+        private void Start ()
+        {
+            _healthSystem = _iGetHealthSystem.GetHealthSystem();
+            _healthSystem.OnDead += (object o, EventArgs e) =>
+            {
+                OnDestroyed?.Invoke();
+                Destroy(gameObject);
+            };
+        }
 
-    private void CheckForHealers (Collider2D collision)
-    {
-        if (!collision.TryGetComponent(out Healer healer)) return;
+        private void Update ()
+        {
+            _healthSystem.Damage(damage * Time.deltaTime);
 
-        _healthSystem.Heal(healer.GetHealAmount());
-        healer.OnHealerUsed();
+            const float threshold = -20f;
+            if (transform.position.y < threshold)
+            {
+                OnDestroyed?.Invoke();
+                Destroy(gameObject);
+            }
+        }
 
-        healSoundSource.Play();
-    }
+        private void OnTriggerEnter2D (Collider2D collision)
+        {
+            CheckForHealers(collision);
+            CheckForFinishZone(collision);
+            CheckForSpike(collision);
+        }
 
-    private void CheckForFinishZone (Collider2D collision)
-    {
-        if (!collision.CompareTag("Finish")) return;
+        private void CheckForHealers (Collider2D collision)
+        {
+            if (!collision.TryGetComponent(out Healer healer)) return;
 
-        OnReachedGoal?.Invoke();
-    }
+            _healthSystem.Heal(healer.GetHealAmount());
+            healer.OnHealerUsed();
 
-    private void CheckForSpike (Collider2D collision)
-    {
-        if (!collision.CompareTag("Spike")) return;
+            healSoundSource.Play();
+        }
 
-        _healthSystem.Die();
-    }
+        private void CheckForFinishZone (Collider2D collision)
+        {
+            if (!collision.CompareTag("Finish")) return;
+
+            OnReachedGoal?.Invoke();
+        }
+
+        private void CheckForSpike (Collider2D collision)
+        {
+            if (!collision.CompareTag("Spike")) return;
+
+            _healthSystem.Die();
+        }
+    } 
 }

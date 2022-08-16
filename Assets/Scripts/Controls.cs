@@ -1,20 +1,21 @@
-using UnityEngine;
-
-public class Controls : MonoBehaviour
+namespace Heal.Components
 {
-    private static MainControls _inputActions;
-
-    public static MainControls InputActions
+    public static class Controls
     {
-        get
+        private static MainControls _inputActions;
+
+        public static MainControls InputActions
         {
-            if (_inputActions == null)
+            get
             {
-                _inputActions = new MainControls();
-                _inputActions.Enable();
-                return _inputActions;
+                if (_inputActions == null)
+                {
+                    _inputActions = new MainControls();
+                    _inputActions.Enable();
+                    return _inputActions;
+                }
+                else return _inputActions;
             }
-            else return _inputActions;
         }
-    }
+    } 
 }
