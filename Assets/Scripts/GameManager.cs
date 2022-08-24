@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using System;
 using Heal.Components;
 
-public class GameManager : Singleton<GameManager>
+public class GameManager : StaticInstanceSingleton<GameManager>
 {
     public event Action<GameState> OnGameStateChanged;
 

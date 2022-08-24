@@ -17,6 +17,9 @@ public class AudioOptions : MonoBehaviour
         SetupVolumeSlider(musicVS, "MusicVol");
         SetupVolumeSlider(masterVS, "MasterVol");
         SetupVolumeSlider(sfxVS, "SFXVol");
+        SetVolumeSliderValue(masterVS, "SFXVol");
+        SetVolumeSliderValue(musicVS, "SFXVol");
+        SetVolumeSliderValue(sfxVS, "SFXVol");
     }
 
     private void SetupVolumeSlider (Slider vs, string paramName)
@@ -26,5 +29,12 @@ public class AudioOptions : MonoBehaviour
             float value = Mathf.Lerp(VOLUME_MIN, VOLUME_MAX, volume);
             mixer.SetFloat(paramName, value);
         });
+    }
+
+    private void SetVolumeSliderValue (Slider vs, string paramName)
+    {
+        mixer.GetFloat(paramName, out float value);
+        vs.value = value;
+        Debug.Log(value);
     }
 }

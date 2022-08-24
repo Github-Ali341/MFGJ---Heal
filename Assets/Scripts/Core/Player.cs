@@ -4,7 +4,7 @@ using System;
 
 namespace Heal.Components
 {
-    public class Player : Singleton<Player>
+    public class Player : StaticInstanceSingleton<Player>
     {
         public event Action OnDestroyed;
         public event Action OnReachedGoal;

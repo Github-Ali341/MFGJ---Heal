@@ -1,4 +1,5 @@
 using UnityEngine;
+using Heal.Scoring;
 using UnityEngine.SceneManagement;
 
 public class UIMethods : MonoBehaviour
